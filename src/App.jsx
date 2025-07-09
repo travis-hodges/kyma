@@ -1,64 +1,164 @@
+import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import { TwentyFirstToolbar } from '@21st-extension/toolbar-react'
-import { ReactPlugin } from '@21st-extension/react'
 import './App.css'
 import MarketBackground from './components/MarketBackground'
+import HeroLanes from './components/HeroLanes'
+import KymaBentoGrid from './components/KymaBentoGrid'
+import "tailwindcss"
 
 function App() {
   console.log('🚀 App component rendering')
   
+  // Form refs for uncontrolled components
+  const firstNameRef = React.useRef(null)
+  const lastNameRef = React.useRef(null)
+  const emailRef = React.useRef(null)
+  const activeTraderRef = React.useRef(null)
+  
+  const [submitState, setSubmitState] = React.useState('idle') // 'idle', 'submitting', 'complete'
+  
+  // Optimized form handler - no re-renders on input
+  const handleSubmit = React.useCallback((e) => {
+    e.preventDefault()
+    
+    // Get form data from refs
+    const formData = {
+      firstName: firstNameRef.current?.value || '',
+      lastName: lastNameRef.current?.value || '',
+      email: emailRef.current?.value || '',
+      isActiveTrader: activeTraderRef.current?.checked || false
+    }
+    
+    // Client-side validation
+    if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.email.trim()) {
+      alert('Please fill in all required fields')
+      return
+    }
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(formData.email)) {
+      alert('Please enter a valid email address')
+      return
+    }
+    
+    setSubmitState('submitting')
+    
+    // Simulate API call
+    setTimeout(() => {
+      setSubmitState('complete')
+      
+      // Reset after animation
+      setTimeout(() => {
+        setSubmitState('idle')
+        // Clear form
+        if (firstNameRef.current) firstNameRef.current.value = ''
+        if (lastNameRef.current) lastNameRef.current.value = ''
+        if (emailRef.current) emailRef.current.value = ''
+        if (activeTraderRef.current) activeTraderRef.current.checked = false
+      }, 2000)
+    }, 1500)
+  }, [])
+  
+  // Smooth scroll function
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      })
+    }
+  }
+  
+  // Header scroll behavior
+  React.useEffect(() => {
+    let lastScrollY = window.scrollY
+    let ticking = false
+    
+    const updateHeader = () => {
+      const header = document.querySelector('.kyma-floating-header')
+      if (!header) return
+      
+      const currentScrollY = window.scrollY
+      
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Scrolling down - hide header
+        header.classList.add('header-hidden')
+      } else if (currentScrollY < lastScrollY) {
+        // Scrolling up - show header
+        header.classList.remove('header-hidden')
+      }
+      
+      lastScrollY = currentScrollY
+      ticking = false
+    }
+    
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(updateHeader)
+        ticking = true
+      }
+    }
+    
+    window.addEventListener('scroll', onScroll)
+    
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+  
   return (
     <BrowserRouter>
-      {/* 21st.dev Toolbar - Development Only */}
-      <TwentyFirstToolbar 
-        config={{
-          plugins: [ReactPlugin]
-        }}
-      />
-
       <div className="app">
-        {/* Header/Navigation */}
-        <header className="header">
-          <div className="header-content">
-            <div className="logo">KYMA</div>
-            <nav className="nav">
-              <a href="#mission">Mission</a>
-              <a href="#capabilities">Capabilities</a>
-              <a href="#join" className="apply-now">Apply now</a>
+        {/* Kyma Glassmorphic Header */}
+        <header className="kyma-floating-header">
+          <div className="kyma-header-content">
+            <button onClick={() => scrollToSection('hero')} className="kyma-logo">
+              <img src="/KymaLogo.png" alt="Kyma Logo" className="kyma-logo-img" />
+              <span className="kyma-logo-text">KYMA</span>
+            </button>
+            <nav className="kyma-nav">
+              <button onClick={() => scrollToSection('hero')} className="kyma-nav-link">Home</button>
+              <button onClick={() => scrollToSection('capabilities')} className="kyma-nav-link">Capabilities</button>
+              <button onClick={() => scrollToSection('mission')} className="kyma-nav-link">Mission</button>
+              <button onClick={() => scrollToSection('values')} className="kyma-nav-link">Values</button>
+              <button onClick={() => scrollToSection('join')} className="kyma-nav-link kyma-apply-btn">Apply now</button>
             </nav>
           </div>
         </header>
 
         {/* Hero Section */}
-        <section className="hero">
-          <MarketBackground />
-          <div className="techno-matrix-bg" aria-hidden="true"></div>
-          <div className="hero-content">
+        <section id="hero" className="hero relative overflow-hidden min-h-screen bg-zinc-900">
+          {/* Layer 1: HUD Grid Background */}
+          <div className="absolute inset-0 z-0">
+            <MarketBackground />
+          </div>
+          
+          {/* Layer 2: Floating Market Cards */}
+          <div className="absolute inset-0 z-10">
+            <HeroLanes />
+          </div>
+          
+          {/* Layer 3: Headline + CTA (Front) */}
+          <div className="hero-content relative z-20">
             <div className="hero-text">
               {/* Early access parallelogram tag */}
-              <a href="#join" className="apply-tag">Apply for Early Access</a>
-              <h1>There's no such<br />thing as a day</h1>
-              <h2>Without space<br />Operations</h2>
-            </div>
-            <div className="hero-stats">
-              <div className="stat-item">
-                <div className="stat-number">9.4k</div>
-                <div className="stat-label">Active Users</div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-number">200+</div>
-                <div className="stat-label">Successful Launches</div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-number">6</div>
-                <div className="stat-label">Core Features</div>
-              </div>
+              <button onClick={() => scrollToSection('join')} className="apply-tag">Apply for Early Access</button>
+              <h1>Financial Markets<br />Move Fast.</h1>
+              <h2>Kyma Moves Faster.</h2>
+              <p className="mt-6 text-lg text-zinc-300 max-w-2xl mx-auto">
+              Experience AI-driven intelligence that distills billions of data points into real-time insight. Kyma allows traders to execute before markets can even react.
+              </p>
             </div>
           </div>
         </section>
 
+        {/* Kyma Bento Grid Section - Directly beneath hero */}
+        <section id="capabilities" className="kyma-bento-section">
+          <KymaBentoGrid />
+        </section>
+
         {/* Mission Section */}
-        <section className="mission">
+        <section id="mission" className="mission">
           <div className="mission-content">
             <div className="header-accent"><span className="accent-line"></span><h3>Mission</h3></div>
             <p>KYMA protects your digital frontier and the freedom to operate in the cloud, keeping it secure, stable and accessible for modern applications and new waves of innovation.</p>
@@ -80,96 +180,102 @@ function App() {
         </section>
 
         {/* Values Section */}
-        <section className="values">
+        <section id="values" className="values">
           <div className="values-content">
-            <div className="header-accent"><span className="accent-line"></span><h3>Values</h3></div>
+            <div className="header-accent"><span className="accent-line"></span><h3>Our Values</h3></div>
             <div className="values-grid">
               <div className="value-card">
-                <div className="header-accent"><span className="accent-line"></span><h4>Character</h4></div>
-                <p>We defend digital integrity and serve our users. Consequently, high ethical standards are the foundation of our operations. We act with integrity, remain accountable for our decisions and honor our obligations to our mission, fellow developers and loved ones.</p>
+                <h4>Innovation</h4>
+                <p>Pushing the boundaries of what's possible in space operations and cloud technology.</p>
               </div>
               <div className="value-card">
-                <div className="header-accent"><span className="accent-line"></span><h4>Connection</h4></div>
-                <p>We're connected by a common purpose, knowing that we're stronger together than we are individually. We treat everyone with empathy and respect and harness different perspectives to fuel innovation. In doing so, we tap into the very best each of us has to offer.</p>
+                <h4>Security</h4>
+                <p>Protecting critical infrastructure and ensuring mission success in any environment.</p>
               </div>
               <div className="value-card">
-                <div className="header-accent"><span className="accent-line"></span><h4>Commitment</h4></div>
-                <p>We are committed to mastering ourselves, our profession and our domain. Where others see obstacles, we see opportunities to learn and grow as a team. And through making the best use of our teammates' diverse strengths, we will achieve feats considered impossible by our competitors.</p>
+                <h4>Excellence</h4>
+                <p>Maintaining the highest standards in every operation and technological advancement.</p>
               </div>
               <div className="value-card">
-                <div className="header-accent"><span className="accent-line"></span><h4>Courage</h4></div>
-                <p>We are steadfast and stand up for what is right, regardless of the circumstances. We are biased toward action and accept risk, when necessary, to secure and defend our platform. We act and speak fearlessly, knowing our teammates and leadership are unwavering.</p>
+                <h4>Collaboration</h4>
+                <p>Working together across disciplines to achieve breakthrough solutions.</p>
               </div>
             </div>
           </div>
         </section>
 
         {/* Join Section */}
-        <section className="join">
+        <section id="join" className="join">
           <div className="join-content">
-            <div className="header-accent"><span className="accent-line"></span><h2>Channel your inner innovator and join the only platform that secures our nation's interests in, from, and to the cloud.</h2></div>
-            <button className="join-btn">Join KYMA</button>
-          </div>
-        </section>
-
-        {/* Newsletter Section */}
-        <section className="newsletter">
-          <div className="newsletter-content">
-            <div className="header-accent"><span className="accent-line"></span><h2>get kyma updates in your email</h2></div>
-            <p>Sign up and never miss out on what we're up to.</p>
-            <form className="newsletter-form">
-              <input type="email" placeholder="Email address" />
-              <input type="text" placeholder="First name" />
-              <input type="text" placeholder="Last name" />
-              <button type="submit">sign up</button>
+            <h2>Join Kyma</h2>
+            <p>AI-driven intelligence that moves faster than markets</p>
+            
+            <form className="kyma-form" onSubmit={handleSubmit}>
+              <div className="form-row">
+                <input
+                  ref={firstNameRef}
+                  type="text"
+                  name="firstName"
+                  placeholder="First Name *"
+                />
+                <input
+                  ref={lastNameRef}
+                  type="text"
+                  name="lastName"
+                  placeholder="Last Name *"
+                />
+              </div>
+              
+              <input
+                ref={emailRef}
+                type="email"
+                name="email"
+                placeholder="Email Address *"
+              />
+              
+              <div className="checkbox-container">
+                <input
+                  ref={activeTraderRef}
+                  type="checkbox"
+                  id="activeTrader"
+                  name="isActiveTrader"
+                />
+                <label htmlFor="activeTrader">
+                  I spend more than 10 hours a week trading
+                </label>
+              </div>
+              
+              <button 
+                type="submit" 
+                className={`kyma-submit-btn ${submitState}`}
+                disabled={submitState !== 'idle'}
+              >
+                <span className="btn-text">
+                  {submitState === 'complete' ? 'Application Submitted!' : 
+                   submitState === 'submitting' ? 'Processing...' : 
+                   'Apply For Early Access'}
+                </span>
+                <span className="btn-loader"></span>
+                <span className="btn-checkmark">✓</span>
+              </button>
             </form>
-            <p className="disclaimer">You must be 13 years or older to opt-in to KYMA emails.</p>
+            <p className="form-note">Messages will be purely related to the early access program, and will not contain marketing or promotional content.</p>
           </div>
         </section>
 
-        {/* Footer */}
-        <footer className="footer">
-          <div className="footer-content">
-            <div className="footer-sections">
-              <div className="footer-section">
-                <h4>About</h4>
-                <a href="#">Mission</a>
-                <a href="#">History</a>
-                <a href="#">FAQs</a>
-                <a href="#">News & Events</a>
+        {/* Kyma Footer */}
+        <footer className="kyma-footer">
+          <div className="kyma-footer-glow"></div>
+          <div className="kyma-footer-content">
+            <div className="kyma-footer-left">
+              <div className="kyma-footer-logo">
+                <img src="/KymaLogo.png" alt="Kyma Logo" className="kyma-footer-logo-img" />
+                <span className="kyma-footer-logo-text">KYMA</span>
               </div>
-              <div className="footer-section">
-                <h4>Careers</h4>
-                <a href="#">Career Finder</a>
-                <a href="#">Benefits</a>
-                <a href="#">Education</a>
-                <a href="#">Training</a>
-              </div>
-              <div className="footer-section">
-                <h4>Capabilities</h4>
-                <a href="#">Cloud Infrastructure</a>
-                <a href="#">Security</a>
-                <a href="#">Performance</a>
-                <a href="#">Scalability</a>
-              </div>
-              <div className="footer-section">
-                <h4>How To Join</h4>
-                <a href="#">What to Expect</a>
-                <a href="#">For Teams</a>
-                <a href="#">Live Chat</a>
-                <a href="#">Apply Now</a>
-              </div>
+              <span className="kyma-copyright">© 2025</span>
             </div>
-            <div className="footer-bottom">
-              <div className="footer-links">
-                <a href="#">KYMA.COM</a>
-                <a href="#">PRIVACY POLICY</a>
-                <a href="#">Accessibility</a>
-                <a href="#">SITEMAP</a>
-                <a href="#">ABOUT OUR ADS</a>
-                <a href="#">COOKIE SETTINGS</a>
-              </div>
-              <div className="copyright">® 2025</div>
+            <div className="kyma-footer-right">
+              <a href="mailto:info@trykyma.com" className="kyma-footer-email">info@trykyma.com</a>
             </div>
           </div>
         </footer>
