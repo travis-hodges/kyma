@@ -230,8 +230,9 @@ const BentoGrid: React.FC<BentoGridProps> = ({ items = defaultItems }) => {
           padding: '1.5rem',
           borderRadius: '1rem',
           overflow: 'hidden',
-          backgroundColor: '#18181b',
-          boxShadow: `0 0 10px ${item.glowRgba}`,
+          backgroundColor: 'rgba(24, 24, 27, 0.8)',
+          backdropFilter: 'blur(10px)',
+          boxShadow: '0 0 15px rgba(255, 77, 0, 0.2)',
           transition: 'all 0.7s ease',
           cursor: 'pointer',
           gridColumn: item.colSpan === 2 && !isMobile ? 'span 2' : 'span 1',
@@ -239,11 +240,11 @@ const BentoGrid: React.FC<BentoGridProps> = ({ items = defaultItems }) => {
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'translateY(-8px)';
-          e.currentTarget.style.boxShadow = `0 0 40px ${item.glowRgba}`;
+          e.currentTarget.style.boxShadow = '0 0 40px rgba(255, 77, 0, 0.4)';
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = 'translateY(0)';
-          e.currentTarget.style.boxShadow = `0 0 10px ${item.glowRgba}`;
+          e.currentTarget.style.boxShadow = '0 0 15px rgba(255, 77, 0, 0.2)';
         }}
       >
         {item.hasInteractiveGrid && (
@@ -363,7 +364,6 @@ export default function KymaBentoGrid() {
     <div style={{
       minHeight: '100vh',
       padding: '3rem 0',
-      backgroundColor: '#09090b',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center'
@@ -376,18 +376,23 @@ export default function KymaBentoGrid() {
       }}>
         <h1 style={{
           fontSize: '2.25rem',
-          fontWeight: 700,
+          fontWeight: 900,
           color: 'white',
-          marginBottom: '1rem'
+          marginBottom: '1rem',
+          textTransform: 'uppercase',
+          letterSpacing: '-0.02em',
+          fontFamily: 'Orbitron, Inter, sans-serif'
         }}>
           Kyma AI-Enhanced Portfolio Intelligence
         </h1>
         <p style={{
           fontSize: '1.125rem',
-          color: '#a1a1aa',
+          color: '#ff9f66',
           maxWidth: '42rem',
           margin: '0 auto',
-          lineHeight: '1.6'
+          lineHeight: '1.6',
+          fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+          textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)'
         }}>
           Layered LLM-driven analysis synthesizing market signals and portfolio context into unified user insights
         </p>

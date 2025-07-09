@@ -2,8 +2,9 @@ import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import './App.css'
 import MarketBackground from './components/MarketBackground'
-import HeroLanes from './components/HeroLanes'
+import EnhancedMarketLanes from './components/EnhancedMarketLanes'
 import KymaBentoGrid from './components/KymaBentoGrid'
+import NeuralNetwork from './components/NeuralNetwork'
 import "tailwindcss"
 
 function App() {
@@ -110,8 +111,15 @@ function App() {
     <BrowserRouter>
       <div className="app">
         {/* Kyma Glassmorphic Header */}
-        <header className="kyma-floating-header">
-          <div className="kyma-header-content">
+        <header className="kyma-floating-header relative overflow-hidden">
+          <NeuralNetwork 
+            intensity="low" 
+            color="orange" 
+            connectionDistance={120}
+            baseOpacity={0.15}
+            style={{ zIndex: 0 }}
+          />
+          <div className="kyma-header-content relative z-10">
             <button onClick={() => scrollToSection('hero')} className="kyma-logo">
               <img src="/KymaLogo.png" alt="Kyma Logo" className="kyma-logo-img" />
               <span className="kyma-logo-text">KYMA</span>
@@ -135,7 +143,7 @@ function App() {
           
           {/* Layer 2: Floating Market Cards */}
           <div className="absolute inset-0 z-10">
-            <HeroLanes />
+            <EnhancedMarketLanes />
           </div>
           
           {/* Layer 3: Headline + CTA (Front) */}
@@ -158,8 +166,15 @@ function App() {
         </section>
 
         {/* Mission Section */}
-        <section id="mission" className="mission">
-          <div className="mission-content">
+        <section id="mission" className="mission relative overflow-hidden">
+          <NeuralNetwork 
+            intensity="low" 
+            color="blue" 
+            connectionDistance={200}
+            baseOpacity={0.3}
+            style={{ zIndex: 0 }}
+          />
+          <div className="mission-content relative z-10">
             <div className="header-accent"><span className="accent-line"></span><h3>Mission</h3></div>
             <p>KYMA protects your digital frontier and the freedom to operate in the cloud, keeping it secure, stable and accessible for modern applications and new waves of innovation.</p>
             <div className="mission-quote">
@@ -170,8 +185,15 @@ function App() {
         </section>
 
         {/* Capabilities Section */}
-        <section className="capabilities">
-          <div className="capabilities-content">
+        <section className="capabilities relative overflow-hidden">
+          <NeuralNetwork 
+            intensity="medium" 
+            color="green" 
+            connectionDistance={240}
+            baseOpacity={0.4}
+            style={{ zIndex: 0 }}
+          />
+          <div className="capabilities-content relative z-10">
             <div className="header-accent"><span className="accent-line"></span><h3>Our Capabilities</h3></div>
             <div className="header-accent"><span className="accent-line"></span><h2>Space now defines our daily lives and the modern way of war.</h2></div>
             <p>From cloud infrastructure to military operations and satellite protection, we defend the ultimate high ground.</p>
@@ -180,8 +202,15 @@ function App() {
         </section>
 
         {/* Values Section */}
-        <section id="values" className="values">
-          <div className="values-content">
+        <section id="values" className="values relative overflow-hidden">
+          <NeuralNetwork 
+            intensity="low" 
+            color="purple" 
+            connectionDistance={180}
+            baseOpacity={0.25}
+            style={{ zIndex: 0 }}
+          />
+          <div className="values-content relative z-10">
             <div className="header-accent"><span className="accent-line"></span><h3>Our Values</h3></div>
             <div className="values-grid">
               <div className="value-card">
@@ -205,8 +234,15 @@ function App() {
         </section>
 
         {/* Join Section */}
-        <section id="join" className="join">
-          <div className="join-content">
+                 <section id="join" className="join relative overflow-hidden">
+           <NeuralNetwork 
+             intensity="medium" 
+             color="orange" 
+             connectionDistance={220}
+             baseOpacity={0.35}
+             style={{ zIndex: 0 }}
+           />
+          <div className="join-content relative z-10">
             <h2>Join Kyma</h2>
             <p>AI-driven intelligence that moves faster than markets</p>
             
@@ -262,6 +298,8 @@ function App() {
             <p className="form-note">Messages will be purely related to the early access program, and will not contain marketing or promotional content.</p>
           </div>
         </section>
+
+        
 
         {/* Kyma Footer */}
         <footer className="kyma-footer">
