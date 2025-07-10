@@ -2,7 +2,7 @@ import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import './App.css'
 import MarketBackground from './components/MarketBackground'
-import EnhancedMarketLanes from './components/EnhancedMarketLanes'
+import FloatingCardLanes from './components/FloatingCardLanes'
 import KymaBentoGrid from './components/KymaBentoGrid'
 import NeuralNetwork from './components/NeuralNetwork'
 import "tailwindcss"
@@ -143,19 +143,22 @@ function App() {
           
           {/* Layer 2: Floating Market Cards */}
           <div className="absolute inset-0 z-10">
-            <EnhancedMarketLanes />
+            <FloatingCardLanes />
           </div>
           
           {/* Layer 3: Headline + CTA (Front) */}
           <div className="hero-content relative z-20">
             <div className="hero-text">
               {/* Early access parallelogram tag */}
-              <button onClick={() => scrollToSection('join')} className="apply-tag">Apply for Early Access</button>
+              <button onClick={() => scrollToSection('join')} className="apply-tag">
+                Apply for Early Access
+                <span className="arrow-icon">→</span>
+              </button>
               <h1>Financial Markets<br />Move Fast.</h1>
               <h2>Kyma Moves Faster.</h2>
-              <p className="mt-6 text-lg text-zinc-300 max-w-2xl mx-auto">
+              <h3 className="mt-6 text-lg text-zinc-300 max-w-2xl mx-auto hero-subtitle">
               Experience AI-driven intelligence that distills billions of data points into real-time insight. Kyma allows traders to execute before markets can even react.
-              </p>
+              </h3>
             </div>
           </div>
         </section>

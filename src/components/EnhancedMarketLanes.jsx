@@ -305,19 +305,6 @@ const EnhancedMarketLanes = () => {
       {/* Enhanced side fade effects with better gradients */}
       <div className="absolute left-0 top-0 bottom-0 w-40 bg-gradient-to-r from-zinc-900 via-zinc-900/90 to-transparent z-15 pointer-events-none" />
       <div className="absolute right-0 top-0 bottom-0 w-40 bg-gradient-to-l from-zinc-900 via-zinc-900/90 to-transparent z-15 pointer-events-none" />
-      
-      {/* Performance stats (development only) */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="absolute bottom-4 right-4 z-30 text-xs text-zinc-400 bg-black/70 px-4 py-3 rounded-xl backdrop-blur-sm border border-zinc-700/50">
-          <div className="space-y-1">
-            <div>Lanes: {config.laneCount}</div>
-            <div>Cards/Lane: {enhancedCardData[0]?.cards.length || 0}</div>
-            <div>Total Cards: {enhancedCardData.reduce((sum, lane) => sum + lane.cards.length, 0)}</div>
-            <div>Viewport: {windowSize.width}×{windowSize.height}</div>
-            <div>Card Size: {config.cardWidth}×{config.cardHeight}</div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
