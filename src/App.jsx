@@ -127,8 +127,8 @@ function App() {
             </button>
             <nav className="kyma-nav">
               <button onClick={() => scrollToSection('hero')} className="kyma-nav-link">Home</button>
-              <button onClick={() => scrollToSection('capabilities')} className="kyma-nav-link">Intelligence Engine</button>
-              <button onClick={() => scrollToSection('mission')} className="kyma-nav-link">Mission & Vision</button>
+              <button onClick={() => scrollToSection('capabilities')} className="kyma-nav-link">Capabilities</button>
+              <button onClick={() => scrollToSection('mission')} className="kyma-nav-link">Our Vision</button>
               <button onClick={() => scrollToSection('values')} className="kyma-nav-link">Values</button>
               <button onClick={() => scrollToSection('join')} className="kyma-nav-link kyma-apply-btn">Apply now</button>
             </nav>
@@ -174,22 +174,7 @@ function App() {
           <MissionBentoGrid />
         </section>
 
-        {/* Capabilities Section */}
-        <section className="capabilities relative overflow-hidden">
-          <NeuralNetwork 
-            intensity="medium" 
-            color="orange" 
-            connectionDistance={240}
-            baseOpacity={0.4}
-            style={{ zIndex: 0 }}
-          />
-          <div className="capabilities-content relative z-10">
-            <div className="header-accent"><span className="accent-line"></span><h3>Our Capabilities</h3></div>
-            <div className="header-accent"><span className="accent-line"></span><h2>Space now defines our daily lives and the modern way of war.</h2></div>
-            <p>From cloud infrastructure to military operations and satellite protection, we defend the ultimate high ground.</p>
-            <button className="explore-btn">Explore Our Capabilities</button>
-          </div>
-        </section>
+
 
         {/* Values Section */}
         <section id="values" className="values relative overflow-hidden">
@@ -201,23 +186,83 @@ function App() {
             style={{ zIndex: 0 }}
           />
           <div className="values-content relative z-10">
-            <div className="header-accent"><span className="accent-line"></span><h3>Our Values</h3></div>
+            {/* Header Section */}
+            <div className="values-header">
+              <div className="values-tag">
+                <svg className="values-tag-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="values-tag-text">
+                  Why Choose Kyma
+                </span>
+              </div>
+              
+              <h1 className="values-title">
+                Built for{' '}
+                <span className="values-title-highlight">
+                  Every Trader
+                </span>
+              </h1>
+              
+              <p className="values-subtitle">
+                Whether you're a professional trader or just getting started, Kyma adapts to your needs with transparent pricing and universal compatibility.
+              </p>
+            </div>
+
+            {/* Values Cards Grid */}
             <div className="values-grid">
-              <div className="value-card">
-                <h4>Innovation</h4>
-                <p>Pushing the boundaries of what's possible in space operations and cloud technology.</p>
+              <div className="value-feature-card platform-card">
+                <div className="value-feature-gradient"></div>
+                <div className="value-feature-icon">
+                  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="value-feature-title">Universal Platform Support</h3>
+                <p className="value-feature-description">
+                  Works seamlessly with any trading platform. No switching required - use Kyma alongside your existing tools and brokers.
+                </p>
+                <div className="value-feature-list">
+                  <div className="value-feature-item">✓ All major brokers</div>
+                  <div className="value-feature-item">✓ Web & mobile apps</div>
+                  <div className="value-feature-item">✓ API integrations</div>
+                </div>
               </div>
-              <div className="value-card">
-                <h4>Security</h4>
-                <p>Protecting critical infrastructure and ensuring mission success in any environment.</p>
+
+              <div className="value-feature-card privacy-card">
+                <div className="value-feature-gradient"></div>
+                <div className="value-feature-icon">
+                  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
+                <h3 className="value-feature-title">Privacy by Design</h3>
+                <p className="value-feature-description">
+                  Your trading data stays yours. Built-in encryption and privacy controls ensure your strategies remain confidential.
+                </p>
+                <div className="value-feature-list">
+                  <div className="value-feature-item">✓ End-to-end encryption</div>
+                  <div className="value-feature-item">✓ Zero data selling</div>
+                  <div className="value-feature-item">✓ Anonymous analytics</div>
+                </div>
               </div>
-              <div className="value-card">
-                <h4>Excellence</h4>
-                <p>Maintaining the highest standards in every operation and technological advancement.</p>
-              </div>
-              <div className="value-card">
-                <h4>Collaboration</h4>
-                <p>Working together across disciplines to achieve breakthrough solutions.</p>
+
+              <div className="value-feature-card pricing-card">
+                <div className="value-feature-gradient"></div>
+                <div className="value-feature-icon">
+                  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                  </svg>
+                </div>
+                <h3 className="value-feature-title">Transparent Pricing</h3>
+                <p className="value-feature-description">
+                  Start free, scale as you grow. No hidden fees, no surprise charges. Pay only for what you use.
+                </p>
+                <div className="value-feature-list">
+                  <div className="value-feature-item">✓ Free tier available</div>
+                  <div className="value-feature-item">✓ Usage-based scaling</div>
+                  <div className="value-feature-item">✓ No long-term contracts</div>
+                </div>
               </div>
             </div>
           </div>
