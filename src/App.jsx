@@ -4,6 +4,7 @@ import './App.css'
 import MarketBackground from './components/MarketBackground'
 import FloatingCardLanes from './components/FloatingCardLanes'
 import KymaBentoGrid from './components/KymaBentoGrid'
+import MissionBentoGrid from './components/MissionBentoGrid'
 import NeuralNetwork from './components/NeuralNetwork'
 import "tailwindcss"
 
@@ -126,8 +127,8 @@ function App() {
             </button>
             <nav className="kyma-nav">
               <button onClick={() => scrollToSection('hero')} className="kyma-nav-link">Home</button>
-              <button onClick={() => scrollToSection('capabilities')} className="kyma-nav-link">Capabilities</button>
-              <button onClick={() => scrollToSection('mission')} className="kyma-nav-link">Mission</button>
+              <button onClick={() => scrollToSection('capabilities')} className="kyma-nav-link">Intelligence Engine</button>
+              <button onClick={() => scrollToSection('mission')} className="kyma-nav-link">Mission & Vision</button>
               <button onClick={() => scrollToSection('values')} className="kyma-nav-link">Values</button>
               <button onClick={() => scrollToSection('join')} className="kyma-nav-link kyma-apply-btn">Apply now</button>
             </nav>
@@ -169,29 +170,15 @@ function App() {
         </section>
 
         {/* Mission Section */}
-        <section id="mission" className="mission relative overflow-hidden">
-          <NeuralNetwork 
-            intensity="low" 
-            color="blue" 
-            connectionDistance={200}
-            baseOpacity={0.3}
-            style={{ zIndex: 0 }}
-          />
-          <div className="mission-content relative z-10">
-            <div className="header-accent"><span className="accent-line"></span><h3>Mission</h3></div>
-            <p>KYMA protects your digital frontier and the freedom to operate in the cloud, keeping it secure, stable and accessible for modern applications and new waves of innovation.</p>
-            <div className="mission-quote">
-              <p>When our competitors ask "What if?", we will have an answer.</p>
-            </div>
-            <p>We're recruiting the brightest minds across technology, engineering and development to fulfill our mission and evolve our operations across the globe.</p>
-          </div>
+        <section id="mission" className="relative overflow-hidden">
+          <MissionBentoGrid />
         </section>
 
         {/* Capabilities Section */}
         <section className="capabilities relative overflow-hidden">
           <NeuralNetwork 
             intensity="medium" 
-            color="green" 
+            color="orange" 
             connectionDistance={240}
             baseOpacity={0.4}
             style={{ zIndex: 0 }}
@@ -208,7 +195,7 @@ function App() {
         <section id="values" className="values relative overflow-hidden">
           <NeuralNetwork 
             intensity="low" 
-            color="purple" 
+            color="orange" 
             connectionDistance={180}
             baseOpacity={0.25}
             style={{ zIndex: 0 }}

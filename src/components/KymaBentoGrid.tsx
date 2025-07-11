@@ -9,6 +9,7 @@ import {
   Globe,
   Brain,
   Activity,
+  Zap,
 } from "lucide-react";
 import { gsap } from 'gsap';
 import { InertiaPlugin } from 'gsap/InertiaPlugin';
@@ -361,43 +362,32 @@ const BentoGrid: React.FC<BentoGridProps> = ({ items = defaultItems }) => {
 
 export default function KymaBentoGrid() {
   return (
-    <div style={{
-      minHeight: '100vh',
-      padding: '3rem 0',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center'
-    }}>
-      <div style={{
-        textAlign: 'center',
-        marginBottom: '3rem',
-        maxWidth: '80rem',
-        padding: '0 1rem'
-      }}>
-        <h1 style={{
-          fontSize: '2.25rem',
-          fontWeight: 900,
-          color: 'white',
-          marginBottom: '1rem',
-          textTransform: 'uppercase',
-          letterSpacing: '-0.02em',
-          fontFamily: 'Orbitron, Inter, sans-serif'
-        }}>
-          Kyma AI-Enhanced Portfolio Intelligence
-        </h1>
-        <p style={{
-          fontSize: '1.125rem',
-          color: '#ff9f66',
-          maxWidth: '42rem',
-          margin: '0 auto',
-          lineHeight: '1.6',
-          fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
-          textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)'
-        }}>
-          Layered LLM-driven analysis synthesizing market signals and portfolio context into unified user insights
-        </p>
+    <div className="capabilities">
+      <div className="capabilities-content">
+        {/* Header Section */}
+        <div className="capabilities-header">
+          <div className="capabilities-tag">
+            <Zap className="capabilities-tag-icon" />
+            <span className="capabilities-tag-text">
+              Intelligence Engine
+            </span>
+          </div>
+          
+          <h1 className="capabilities-title">
+            Kyma AI-Enhanced{' '}
+            <span className="capabilities-title-highlight">
+              Portfolio Intelligence
+            </span>
+          </h1>
+          
+          <p className="capabilities-subtitle">
+            Layered LLM-driven analysis synthesizing market signals and portfolio context into unified user insights
+          </p>
+        </div>
+
+        {/* Capabilities Bento Grid */}
+        <BentoGrid />
       </div>
-      <BentoGrid />
     </div>
   );
 }

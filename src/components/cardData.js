@@ -551,30 +551,30 @@ export const getCardsByType = (type) => {
   return cardData[type].map(card => ({...card, type}));
 };
 
-// Color schemes for each card type
+// Color schemes for each card type - unified orange theme
 export const cardColorSchemes = {
   stock: {
-    primary: 'rgba(52, 211, 153, 0.6)',
-    secondary: 'rgba(52, 211, 153, 0.2)',
-    accent: 'rgb(52, 211, 153)',
-    glow: 'rgba(52, 211, 153, 0.4)'
+    primary: 'rgba(255, 77, 0, 0.6)',
+    secondary: 'rgba(255, 77, 0, 0.2)',
+    accent: 'rgb(255, 77, 0)',
+    glow: 'rgba(255, 77, 0, 0.4)'
   },
   crypto: {
-    primary: 'rgba(255, 165, 0, 0.6)',
-    secondary: 'rgba(255, 165, 0, 0.2)',
-    accent: 'rgb(255, 165, 0)',
-    glow: 'rgba(255, 165, 0, 0.4)'
+    primary: 'rgba(255, 77, 0, 0.6)',
+    secondary: 'rgba(255, 77, 0, 0.2)',
+    accent: 'rgb(255, 77, 0)',
+    glow: 'rgba(255, 77, 0, 0.4)'
   },
   news: {
-    primary: 'rgba(59, 130, 246, 0.6)',
-    secondary: 'rgba(59, 130, 246, 0.2)',
-    accent: 'rgb(59, 130, 246)',
-    glow: 'rgba(59, 130, 246, 0.4)'
+    primary: 'rgba(255, 77, 0, 0.6)',
+    secondary: 'rgba(255, 77, 0, 0.2)',
+    accent: 'rgb(255, 77, 0)',
+    glow: 'rgba(255, 77, 0, 0.4)'
   },
   economic: {
-    primary: 'rgba(168, 85, 247, 0.6)',
-    secondary: 'rgba(168, 85, 247, 0.2)',
-    accent: 'rgb(168, 85, 247)',
-    glow: 'rgba(168, 85, 247, 0.4)'
+    primary: 'rgba(255, 77, 0, 0.6)',
+    secondary: 'rgba(255, 77, 0, 0.2)',
+    accent: 'rgb(255, 77, 0)',
+    glow: 'rgba(255, 77, 0, 0.4)'
   }
 }; 

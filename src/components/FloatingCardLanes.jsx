@@ -14,6 +14,7 @@ const FloatingCardLanes = () => {
   const containerRef = useRef(null);
   const animationRef = useRef(null);
   const laneQueues = useRef([]);
+  const isPageVisible = useRef(true);
   const lastUpdateTime = useRef(0);
   
   // Card dimensions - dynamic heights
@@ -22,23 +23,21 @@ const FloatingCardLanes = () => {
   const CARD_SPACING = 60; // Increased spacing
   const LANE_SPACING = 60; // Reduced for better fit
   
-  // Animation settings - slower for smoother performance
-  const ANIMATION_SPEED = 0.9; // Slightly faster for better flow
-  const TARGET_FPS = 60;
-  const FRAME_TIME = 1000 / TARGET_FPS;
+  // Animation settings - PERFECTLY consistent movement
+  const ANIMATION_SPEED = 3.0; // Exactly 3 pixels per frame for faster movement
   
   // Calculate responsive lane count and centering
   const calculateLaneConfig = useCallback(() => {
-    if (!containerRef.current) return { count: 4, startX: 0 };
+    if (!containerRef.current) return { count: 6, startX: 0 };
     
     const containerWidth = containerRef.current.offsetWidth;
     const totalLaneWidth = CARD_WIDTH + LANE_SPACING;
     let maxLanes = Math.floor(containerWidth / totalLaneWidth);
     
-    // Responsive breakpoints
-    if (containerWidth < 768) maxLanes = Math.min(maxLanes, 2); // Mobile
-    else if (containerWidth < 1024) maxLanes = Math.min(maxLanes, 4); // Tablet
-    else maxLanes = Math.min(maxLanes, 6); // Desktop
+    // Allow more lanes, even if some are partially off-screen
+    if (containerWidth < 768) maxLanes = Math.max(maxLanes, 3); // Mobile - at least 3 lanes
+    else if (containerWidth < 1024) maxLanes = Math.max(maxLanes, 5); // Tablet - at least 5 lanes
+    else maxLanes = Math.max(maxLanes, 8); // Desktop - at least 8 lanes
     
     // Calculate starting X position to center the lanes
     const totalWidth = maxLanes * CARD_WIDTH + (maxLanes - 1) * LANE_SPACING;
@@ -47,137 +46,152 @@ const FloatingCardLanes = () => {
     return { count: maxLanes, startX };
   }, []);
   
-  // Get estimated card height based on type (for positioning, actual height will be auto)
-  const getEstimatedCardHeight = (cardType) => {
-    switch (cardType) {
-      case 'stock': return MIN_CARD_HEIGHT;
-      case 'crypto': return MIN_CARD_HEIGHT;
-      case 'news': return MIN_CARD_HEIGHT + 60; // News cards need more space for content
-      case 'economic': return MIN_CARD_HEIGHT + 80; // Economic cards need most space
-      case 'options': return MIN_CARD_HEIGHT + 40; // Options cards need space for Greeks
-      case 'forex': return MIN_CARD_HEIGHT + 20; // Forex cards need space for bid/ask
-      case 'commodities': return MIN_CARD_HEIGHT + 30; // Commodities cards need space for contract info
-      default: return MIN_CARD_HEIGHT;
-    }
-  };
+  // Constants for consistent spacing
+  const CONSISTENT_CARD_HEIGHT = MIN_CARD_HEIGHT + 40;
+  const TOTAL_CARD_SPACE = CONSISTENT_CARD_HEIGHT + CARD_SPACING;
   
-  // Calculate how many cards needed to fill viewport
+  // Calculate how many cards needed to fill viewport (with performance optimization)
   const calculateCardsNeeded = useCallback((containerHeight) => {
-    const avgCardHeight = MIN_CARD_HEIGHT + 40; // Average height considering different card types
-    const totalSpaceNeeded = containerHeight + 400; // Extra buffer above/below viewport
-    return Math.ceil(totalSpaceNeeded / (avgCardHeight + CARD_SPACING)) + 2; // Extra cards for smooth flow
-  }, []);
+    // Calculate cards needed to cover the entire viewport plus buffer
+    const viewportCards = Math.ceil(containerHeight / TOTAL_CARD_SPACE);
+    const bufferCards = Math.ceil(800 / TOTAL_CARD_SPACE); // 800px buffer
+    const baseCards = viewportCards + bufferCards + 6; // Extra cards for smooth flow
+    
+    // Reduce card count on lower-end devices or when tab is not visible
+    if (!isPageVisible.current) {
+      return Math.max(12, Math.floor(baseCards * 0.6)); // 60% of cards when not visible
+    }
+    
+    // Check for low-end devices (reduced performance mode)
+    const isLowEndDevice = navigator.hardwareConcurrency <= 4 || 
+                          navigator.deviceMemory <= 4 ||
+                          window.innerWidth < 768;
+    
+    if (isLowEndDevice) {
+      return Math.max(15, Math.floor(baseCards * 0.7)); // 70% of cards on low-end devices
+    }
+    
+    return baseCards;
+  }, [TOTAL_CARD_SPACE]);
 
-  // Initialize lanes and queues
+  // Initialize lanes and queues with FULL viewport coverage
   const initializeLanes = useCallback(() => {
     const laneConfig = calculateLaneConfig();
     setLaneCount(laneConfig.count);
     
     const containerHeight = containerRef.current?.offsetHeight || window.innerHeight;
-    const cardsPerLane = calculateCardsNeeded(containerHeight);
     
     // Initialize lane queues with random cards
     laneQueues.current = [];
     const newActiveLanes = [];
     
     for (let i = 0; i < laneConfig.count; i++) {
-      const queueCards = getRandomCards(50).map(card => ({
+      const queueCards = getRandomCards(300).map(card => ({
         ...card,
         id: `${card.id}-${Date.now()}-${Math.random()}`,
-        estimatedHeight: getEstimatedCardHeight(card.type)
+        estimatedHeight: CONSISTENT_CARD_HEIGHT
       }));
       laneQueues.current.push(queueCards);
       newActiveLanes.push([]);
     }
     
-    // Fill each lane with initial cards to cover entire viewport
+    // NEW STRATEGY: Fill each lane to completely cover viewport PLUS drift distance
     for (let laneIndex = 0; laneIndex < laneConfig.count; laneIndex++) {
       const direction = laneIndex % 2 === 0 ? 'down' : 'up';
       
-      // Start some cards on-screen for immediate visibility
-      const onScreenCards = Math.min(10, Math.floor(cardsPerLane * 0.6)); // 60% of cards start on screen
+      // Calculate how many cards we need to fill the ENTIRE viewport plus drift distance
+      const cardsToFillViewport = Math.ceil(containerHeight / TOTAL_CARD_SPACE);
+      const driftDistance = containerHeight + CONSISTENT_CARD_HEIGHT; // Distance cards need to drift to fully exit
+      const cardsForDrift = Math.ceil(driftDistance / TOTAL_CARD_SPACE);
+      const totalCardsNeeded = cardsToFillViewport + cardsForDrift + 8; // Extra buffer
+      
       let currentY;
       
       if (direction === 'down') {
-        // For down direction, start from bottom of viewport and work up
-        currentY = containerHeight + 100;
+        // Start cards so they fill the viewport immediately
+        currentY = 0; // Start at top of viewport
       } else {
-        // For up direction, start from top of viewport and work down  
-        currentY = -100;
+        // Start cards so they fill the viewport immediately
+        currentY = containerHeight - CONSISTENT_CARD_HEIGHT; // Start at bottom of viewport
       }
       
-      for (let cardIndex = 0; cardIndex < cardsPerLane; cardIndex++) {
+      // Fill the lane with cards using PERFECT spacing
+      for (let cardIndex = 0; cardIndex < totalCardsNeeded; cardIndex++) {
         if (laneQueues.current[laneIndex].length > 0) {
           const card = laneQueues.current[laneIndex].shift();
-          const cardHeight = getEstimatedCardHeight(card.type);
-          
-          // Position cards to fill viewport first, then extend beyond
-          if (cardIndex < onScreenCards) {
-            // Place cards within viewport for immediate visibility
-            if (direction === 'down') {
-              currentY -= (cardHeight + CARD_SPACING);
-            } else {
-              currentY += (cardHeight + CARD_SPACING);
-            }
-          } else {
-            // Place remaining cards off-screen
-            if (direction === 'down') {
-              currentY -= (cardHeight + CARD_SPACING);
-            } else {
-              currentY += (cardHeight + CARD_SPACING);
-            }
-          }
           
           newActiveLanes[laneIndex].push({
             ...card,
             x: laneConfig.startX + laneIndex * (CARD_WIDTH + LANE_SPACING),
             y: currentY,
             direction,
-            speed: ANIMATION_SPEED, // Fixed speed for all cards
             laneIndex,
-            estimatedHeight: cardHeight
+            estimatedHeight: CONSISTENT_CARD_HEIGHT
           });
+          
+          // Move to next position with PERFECT spacing
+          if (direction === 'down') {
+            currentY += TOTAL_CARD_SPACE;
+          } else {
+            currentY -= TOTAL_CARD_SPACE;
+          }
         }
       }
     }
     
     setActiveLanes(newActiveLanes);
-  }, [calculateLaneConfig, calculateCardsNeeded]);
+    
+    // Debug: Log initialization info
+    const cardsToFillViewport = Math.ceil(containerHeight / TOTAL_CARD_SPACE);
+    const driftDistance = containerHeight + CONSISTENT_CARD_HEIGHT;
+    const cardsForDrift = Math.ceil(driftDistance / TOTAL_CARD_SPACE);
+    const totalCardsNeeded = cardsToFillViewport + cardsForDrift + 8;
+    console.log(`Initialized ${laneConfig.count} lanes with ${totalCardsNeeded} cards each`);
+    console.log(`Container height: ${containerHeight}px, Card space: ${TOTAL_CARD_SPACE}px`);
+    console.log(`Cards to fill viewport: ${cardsToFillViewport}, Cards for drift: ${cardsForDrift}`);
+  }, [calculateLaneConfig, CONSISTENT_CARD_HEIGHT, TOTAL_CARD_SPACE]);
   
-  // Animation loop with throttling
+  // Animation loop with smooth consistent movement and performance optimizations
   const animate = useCallback((currentTime) => {
-    if (!containerRef.current) {
+    if (!containerRef.current || !isPageVisible.current) {
       animationRef.current = requestAnimationFrame(animate);
       return;
     }
     
-    // Throttle to target FPS
-    if (currentTime - lastUpdateTime.current < FRAME_TIME) {
+    // Ensure consistent frame timing for perfect spacing
+    if (currentTime - lastUpdateTime.current < 16) { // ~60fps
       animationRef.current = requestAnimationFrame(animate);
       return;
     }
-    
     lastUpdateTime.current = currentTime;
+    
     const containerHeight = containerRef.current.offsetHeight;
     let needsUpdate = false;
+    let hasVisibleCards = false;
     
     setActiveLanes(currentLanes => {
       const newLanes = currentLanes.map(laneCards => {
         const updatedLane = [];
         
         laneCards.forEach(card => {
-          // Move card
+          // Move card with consistent speed
           const newY = card.direction === 'down' 
-            ? card.y + card.speed 
-            : card.y - card.speed;
+            ? card.y + ANIMATION_SPEED 
+            : card.y - ANIMATION_SPEED;
           
-          // Check if card has left the container
+          // Check if card has FULLY exited the container (ENTIRE card must be completely off-screen)
+          const cardBottom = newY + CONSISTENT_CARD_HEIGHT;
+          const cardTop = newY;
           const hasExited = card.direction === 'down' 
-            ? newY > containerHeight + card.estimatedHeight
-            : newY < -card.estimatedHeight;
+            ? cardBottom > containerHeight // BOTTOM of card is below viewport (last part to exit)
+            : cardTop < 0; // TOP of card is above viewport (last part to exit)
+          
+          // Check if card is visible (for performance optimization)
+          const isVisible = cardBottom > 0 && cardTop < containerHeight;
+          if (isVisible) hasVisibleCards = true;
           
           if (!hasExited) {
-            // Keep card in lane
+            // Keep card in lane with updated position
             updatedLane.push({
               ...card,
               y: newY
@@ -187,7 +201,7 @@ const FloatingCardLanes = () => {
             const shuffledCard = {
               ...card,
               id: `${card.id}-${Date.now()}-${Math.random()}`,
-              estimatedHeight: getEstimatedCardHeight(card.type)
+              estimatedHeight: CONSISTENT_CARD_HEIGHT
             };
             laneQueues.current[card.laneIndex].push(shuffledCard);
             needsUpdate = true;
@@ -205,24 +219,29 @@ const FloatingCardLanes = () => {
           const direction = laneIndex % 2 === 0 ? 'down' : 'up';
           const cardsInDirection = laneCards.filter(c => c.direction === direction);
           
-          // Check if we need more cards based on viewport coverage
+          // Check if we need more cards based on viewport coverage PLUS drift distance
           const containerHeight = containerRef.current?.offsetHeight || window.innerHeight;
-          const minCards = calculateCardsNeeded(containerHeight);
+          const cardsToFillViewport = Math.ceil(containerHeight / TOTAL_CARD_SPACE);
+          const driftDistance = containerHeight + CONSISTENT_CARD_HEIGHT;
+          const cardsForDrift = Math.ceil(driftDistance / TOTAL_CARD_SPACE);
+          const minCards = cardsToFillViewport + cardsForDrift + 4; // Ensure proper coverage
           
+          // Ensure we maintain proper spacing by checking if gaps exist
           if (cardsInDirection.length < minCards) {
             const newCard = laneQueues.current[laneIndex].shift();
-            const cardHeight = getEstimatedCardHeight(newCard.type);
             
-            // Find the appropriate position for the new card
+            // Find the appropriate position for the new card using PERFECT spacing
             let newY;
             if (direction === 'down') {
-              // Find the topmost card (smallest Y value)
-              const topmostCard = cardsInDirection.sort((a, b) => a.y - b.y)[0];
-              newY = topmostCard ? topmostCard.y - cardHeight - CARD_SPACING : -cardHeight - CARD_SPACING;
+              // Find the topmost card (smallest Y value) and place new card above it
+              const sortedCards = cardsInDirection.sort((a, b) => a.y - b.y);
+              const topmostCard = sortedCards[0];
+              newY = topmostCard ? topmostCard.y - TOTAL_CARD_SPACE : 0;
             } else {
-              // Find the bottommost card (largest Y value)
-              const bottommostCard = cardsInDirection.sort((a, b) => b.y - a.y)[0];
-              newY = bottommostCard ? bottommostCard.y + bottommostCard.estimatedHeight + CARD_SPACING : containerHeight + cardHeight + CARD_SPACING;
+              // Find the bottommost card (largest Y value) and place new card below it
+              const sortedCards = cardsInDirection.sort((a, b) => b.y - a.y);
+              const bottommostCard = sortedCards[0];
+              newY = bottommostCard ? bottommostCard.y + TOTAL_CARD_SPACE : containerHeight - CONSISTENT_CARD_HEIGHT;
             }
             
             laneCards.push({
@@ -230,9 +249,8 @@ const FloatingCardLanes = () => {
               x: laneConfig.startX + laneIndex * (CARD_WIDTH + LANE_SPACING),
               y: newY,
               direction,
-              speed: ANIMATION_SPEED, // Fixed speed for all cards
               laneIndex,
-              estimatedHeight: cardHeight
+              estimatedHeight: CONSISTENT_CARD_HEIGHT
             });
           }
                  }
@@ -241,8 +259,16 @@ const FloatingCardLanes = () => {
        return newLanes;
     });
     
-    animationRef.current = requestAnimationFrame(animate);
-  }, [calculateLaneConfig, calculateCardsNeeded]);
+    // Performance optimization: Only continue animation if there are visible cards or we need updates
+    if (hasVisibleCards || needsUpdate) {
+      animationRef.current = requestAnimationFrame(animate);
+    } else {
+      // Pause animation when no cards are visible (e.g., tab is not active)
+      setTimeout(() => {
+        animationRef.current = requestAnimationFrame(animate);
+      }, 200); // Check again in 200ms to reduce CPU usage
+    }
+  }, [calculateLaneConfig, calculateCardsNeeded, CONSISTENT_CARD_HEIGHT, TOTAL_CARD_SPACE, ANIMATION_SPEED]);
   
   // Start animation
   useEffect(() => {
@@ -256,7 +282,7 @@ const FloatingCardLanes = () => {
     };
   }, [initializeLanes, animate]);
   
-  // Handle resize
+  // Handle resize and visibility changes for performance
   useEffect(() => {
     const handleResize = () => {
       const laneConfig = calculateLaneConfig();
@@ -265,8 +291,17 @@ const FloatingCardLanes = () => {
       }
     };
     
+    const handleVisibilityChange = () => {
+      isPageVisible.current = !document.hidden;
+    };
+    
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, [calculateLaneConfig, laneCount, initializeLanes]);
   
   // Render card based on type
