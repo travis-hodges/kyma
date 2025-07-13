@@ -125,13 +125,15 @@ function App() {
               <img src="/KymaLogo.png" alt="Kyma Logo" className="kyma-logo-img" />
               <span className="kyma-logo-text">KYMA</span>
             </button>
-            <nav className="kyma-nav">
+            {/* Desktop Navigation */}
+            <nav className="kyma-nav hidden md:flex">
               <button onClick={() => scrollToSection('hero')} className="kyma-nav-link">Home</button>
-              <button onClick={() => scrollToSection('capabilities')} className="kyma-nav-link">Capabilities</button>
-              <button onClick={() => scrollToSection('mission')} className="kyma-nav-link">Our Vision</button>
-              <button onClick={() => scrollToSection('values')} className="kyma-nav-link">Values</button>
+              <button onClick={() => scrollToSection('capabilities')} className="kyma-nav-link">Features</button>
+              <button onClick={() => scrollToSection('mission')} className="kyma-nav-link">Mission</button>
+              <button onClick={() => scrollToSection('values')} className="kyma-nav-link">Benefits</button>
               <button onClick={() => scrollToSection('join')} className="kyma-nav-link kyma-apply-btn">Apply now</button>
             </nav>
+            {/* Mobile Hamburger Menu */}
           </div>
         </header>
 
@@ -143,7 +145,7 @@ function App() {
           </div>
           
           {/* Layer 2: Floating Market Cards */}
-          <div className="absolute inset-0 z-10">
+          <div className="absolute inset-0 z-10 hidden md:block">
             <FloatingCardLanes />
           </div>
           
@@ -165,13 +167,31 @@ function App() {
         </section>
 
         {/* Kyma Bento Grid Section - Directly beneath hero */}
-        <section id="capabilities" className="kyma-bento-section">
-          <KymaBentoGrid />
+        <section id="capabilities" className="kyma-bento-section relative overflow-hidden">
+          <NeuralNetwork 
+            intensity="low" 
+            color="orange" 
+            connectionDistance={150}
+            baseOpacity={0.3}
+            style={{ zIndex: 5 }}
+          />
+          <div className="relative z-10">
+            <KymaBentoGrid />
+          </div>
         </section>
 
         {/* Mission Section */}
         <section id="mission" className="relative overflow-hidden">
-          <MissionBentoGrid />
+          <NeuralNetwork 
+            intensity="low" 
+            color="orange" 
+            connectionDistance={160}
+            baseOpacity={0.3}
+            style={{ zIndex: 5 }}
+          />
+          <div className="relative z-10">
+            <MissionBentoGrid />
+          </div>
         </section>
 
 

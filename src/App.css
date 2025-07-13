@@ -153,7 +153,11 @@ body {
 /* Hero Section - KymaBentoGrid Design */
 .hero {
   min-height: 100vh;
-  background: linear-gradient(to bottom, #18181b, #000);
+  background: linear-gradient(to bottom, 
+    #18181b 0%, 
+    #000 85%, 
+    rgba(15, 8, 3, 0.6) 100%
+  );
   position: relative;
 }
 
@@ -188,7 +192,7 @@ body {
 }
 
 .hero-text {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -200,7 +204,7 @@ body {
   font-size: 1.125rem;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   margin-top: 2rem;
-  max-width: 600px;
+  max-width: 900px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -552,7 +556,15 @@ body {
 
 /* Kyma Bento Grid Section */
 .kyma-bento-section {
-  background: #000;
+  background: linear-gradient(to bottom, 
+    rgba(15, 8, 3, 0.6) 0%,     /* Start with hero fog */
+    rgba(12, 7, 2, 0.7) 10%, 
+    rgba(10, 5, 2, 0.8) 20%,
+    rgba(8, 4, 1, 0.9) 35%,
+    rgba(6, 3, 1, 0.95) 50%,
+    rgba(4, 2, 0, 0.98) 70%,
+    #000 100%                   /* Pure black */
+  );
   position: relative;
   z-index: 1;
 }
@@ -590,7 +602,7 @@ body {
 /* Mission Bento Section - Consistent Design */
 .mission-bento {
   padding: 4rem 0;
-  background: #09090b;
+  background: #000;
   position: relative;
 }
 
@@ -601,7 +613,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.01) 50%, transparent 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.025) 0%, rgba(255, 255, 255, 0.012) 50%, transparent 100%);
   pointer-events: none;
   z-index: 1;
 }
@@ -1018,7 +1030,15 @@ body {
 /* Capabilities Section - KymaBentoGrid Design */
 .capabilities {
   padding: 4rem 0;
-  background: #09090b;
+  background: linear-gradient(to bottom, 
+    rgba(15, 8, 3, 0.6) 0%,     /* Start with hero fog */
+    rgba(12, 7, 2, 0.7) 10%, 
+    rgba(10, 5, 2, 0.8) 20%,
+    rgba(8, 4, 1, 0.9) 35%,
+    rgba(6, 3, 1, 0.95) 50%,
+    rgba(4, 2, 0, 0.98) 70%,
+    #000 100%                   /* Pure black */
+  );
   position: relative;
 }
 
@@ -1029,7 +1049,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.015) 50%, transparent 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.025) 0%, rgba(255, 255, 255, 0.012) 50%, transparent 100%);
   pointer-events: none;
   z-index: 1;
 }
@@ -1125,7 +1145,7 @@ body {
 /* Values Section - KymaBentoGrid Design */
 .values {
   padding: 4rem 0;
-  background: #09090b;
+  background: #000;
   position: relative;
 }
 
@@ -1322,7 +1342,7 @@ body {
 /* Join Section - KymaBentoGrid Design */
 .join {
   padding: 4rem 0;
-  background: #09090b;
+  background: #000;
   text-align: center;
   position: relative;
 }
@@ -1574,7 +1594,7 @@ body {
 /* Kyma Footer - Mirroring KymaBentoGrid Design */
 .kyma-footer {
   padding: 2rem;
-  background: #09090b;
+  background: #000;
   border-top: 1px solid #27272a;
   position: relative;
   overflow: hidden;
@@ -1756,12 +1776,7 @@ body {
 /* Responsive Design */
 @media (max-width: 768px) {
   .kyma-floating-header {
-    top: 0.5rem;
-    left: 0.5rem;
-    right: 0.5rem;
-    transform: none;
-    min-width: auto;
-    border-radius: 0.5rem;
+    display: none;
   }
   
   .kyma-floating-header.header-hidden {
@@ -1786,8 +1801,7 @@ body {
   }
   
   .kyma-nav {
-    gap: 0.4rem;
-    flex: none;
+    display: none;
   }
   
   .kyma-nav-link {
@@ -1802,7 +1816,52 @@ body {
   
   .hero-text h1,
   .hero-text h2 {
-    font-size: 3rem;
+    font-size: 3.5rem;
+    line-height: 0.9;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.03em;
+  }
+  
+  .hero-content {
+    padding: 2rem 1.5rem;
+    min-height: 100vh;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .hero-text {
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .hero-text p {
+    font-size: 1.125rem;
+    margin-top: 0;
+    max-width: 100%;
+    line-height: 1.6;
+    color: #ff9f66;
+  }
+  
+  .apply-tag {
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    margin: 0;
+    align-self: center;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border-radius: 2rem;
+    box-shadow: 0 0 20px rgba(255, 77, 0, 0.3);
+  }
+  
+  .apply-tag:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(255, 77, 0, 0.4);
   }
   
   .mission-quote p {
@@ -1838,13 +1897,15 @@ body {
   }
   
   .checkbox-container {
-    flex-direction: column;
+    flex-direction: row;
     gap: 0.5rem;
-    text-align: center;
+    text-align: left;
+    align-items: center;
   }
   
   .checkbox-container label {
     font-size: 0.9rem;
+    margin: 0;
   }
   
   .values-grid {
@@ -1872,14 +1933,35 @@ body {
   }
   
   .kyma-footer-content {
-    flex-direction: column;
-    text-align: center;
+    flex-direction: row;
+    text-align: left;
     gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
   }
   
   .kyma-footer-left {
-    flex-direction: column;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+    flex: 1;
+  }
+  
+  .kyma-footer-logo {
+    flex-direction: row;
+    align-items: center;
     gap: 0.5rem;
+  }
+  
+  .kyma-copyright {
+    font-size: 0.8rem;
+    margin: 0;
+  }
+  
+  .kyma-footer-email {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
   }
 }
 
